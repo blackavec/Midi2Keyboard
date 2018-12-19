@@ -35,4 +35,5 @@ mapperObject = {
   'A#1': ['ctrl', 'shift', '8']
 }
 
-hotkeyList = ['command', 'shift', 'ctrl', 'option']
+hotkeyList = ['command', 'apps', 'alt', 'altleft', 'altright', 'shift', 'shiftleft', \
+  'shiftright', 'ctrl', 'ctrlleft', 'ctrlright', 'option', 'optionleft', 'optionright']

@@ -1,31 +1,16 @@
 import sys
 import rtmidi
 import threading
+import pyautogui
 
 from mapper import mapperObject, hotkeyList
-from pyautogui import press, hotkey, keyDown, keyUp
 
 def handleMessage(midi):
-    if midi.isNoteOn():
-        noteName = midi.getMidiNoteName(midi.getNoteNumber())
+    noteName = midi.getMidiNoteName(midi.getNoteNumber())
+    if noteName in mapperObject:
         mappedEvent = mapperObject[noteName]
-
-        # send the event to keyboard
-        hotkeys = []
-        keys = []
-        for event in mappedEvent:
-            if event in hotkeyList:
-                hotkeys.insert(0, event)
-                keyDown(event)
-                print('hold down %s' % event)
-                continue
-
-            print('press %s' % event)
-            press(event)
-
-        for key in hotkeys:
-          keyUp(key)
-          print('key up %s' % key)
+        pyautogui.hotkey(*mappedEvent)
+        print('%s => %s'% (noteName, mappedEvent))
 
 class Collector(threading.Thread):
     def __init__(self, device, port):
@@ -43,9 +28,9 @@ class Collector(threading.Thread):
             if self.quit:
                 return
 
-            msg = self.device.getMessage()
-            if msg:
-                handleMessage(msg)
+            midi = self.device.getMessage()
+            if midi and midi.isNoteOn():
+                handleMessage(midi)
 
 
 collectors = []
