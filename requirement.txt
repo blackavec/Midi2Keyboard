@@ -1,0 +1,6 @@
+virtualenv
+rtmidi
+pyobjc-framework-Quartz
+pyobjc-core
+pyobjc
+pyautogui
