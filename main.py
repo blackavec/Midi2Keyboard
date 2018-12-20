@@ -5,13 +5,6 @@ import pyautogui
 
 from mapper import mapperObject, hotkeyList
 
-def handleMessage(midi):
-    noteName = midi.getMidiNoteName(midi.getNoteNumber())
-    if noteName in mapperObject:
-        mappedEvent = mapperObject[noteName]
-        pyautogui.hotkey(*mappedEvent)
-        print('%s => %s'% (noteName, mappedEvent))
-
 class Collector(threading.Thread):
     def __init__(self, device, port):
         threading.Thread.__init__(self)
@@ -20,6 +13,13 @@ class Collector(threading.Thread):
         self.portName = device.getPortName(port)
         self.device = device
         self.quit = False
+
+    def handleMessage(self, midi):
+        noteName = midi.getMidiNoteName(midi.getNoteNumber())
+        if noteName in mapperObject:
+            mappedEvent = mapperObject[noteName]
+            pyautogui.hotkey(*mappedEvent)
+            print('%s => %s'% (noteName, mappedEvent))
 
     def run(self):
         self.device.openPort(self.port)
@@ -30,7 +30,7 @@ class Collector(threading.Thread):
 
             midi = self.device.getMessage()
             if midi and midi.isNoteOn():
-                handleMessage(midi)
+                self.handleMessage(midi)
 
 
 collectors = []
